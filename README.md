@@ -1,4 +1,4 @@
-# SMART HTML Viewer
+# SMART-HTML-Viewer
 SMART viewer by Nima.Sh
 
 🌐 SMART HTML Viewer
