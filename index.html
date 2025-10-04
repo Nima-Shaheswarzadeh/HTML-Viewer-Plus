@@ -15,13 +15,13 @@
       --accent: #2563eb;
     }
     body.dark {
-      --bg-color: #0b0f1a;
-      --text-color: #e6edf7;
-      --icon-color: #6ef3ff;
-      --glow-color: #00c896;
-      --button-bg: #121826;
-      --shadow-color: rgba(110, 243, 255, 0.35);
-      --accent: #6ef3ff;
+      --bg-color: #181a1f;       /* خاکستری خیلی تیره */
+      --text-color: #aefcae;     /* سبز روشن */
+      --icon-color: #7cfc00;     /* سبز Xbox */
+      --glow-color: #00ff88;     /* سبز نئونی */
+      --button-bg: #202428;      /* کمی روشن‌تر از بک‌گراند */
+      --shadow-color: rgba(0, 255, 136, 0.35);
+      --accent: #00ff88;
     }
     body {
       background: var(--bg-color);
@@ -53,10 +53,14 @@
       display: inline-flex; justify-content: center; align-items: center;
       font-size: 18px; cursor: pointer;
       box-shadow: 0 0 12px var(--shadow-color);
-      transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+      transition: transform 0.35s ease, box-shadow 0.35s ease, background 0.2s ease;
+      transform-style: preserve-3d;
     }
     .device-button i, .action-btn i { color: var(--icon-color); transition: color 0.2s ease; }
-    .device-button:hover, .action-btn:hover { transform: translateY(-2px); box-shadow: 0 0 18px var(--glow-color); }
+    .device-button:hover, .action-btn:hover {
+      transform: translateY(-6px) rotate3d(1, 1, 0, 18deg) scale(1.1);
+      box-shadow: 0 0 25px var(--glow-color);
+    }
 
     .dropdown { position: relative; }
     .dropdown-content {
@@ -112,7 +116,7 @@
     iframe {
       display: block;
       width: 100%;
-      height: 320px;
+      height: 220px; /* پیش‌فرض 220 */
       background: #fff;
       border: none;
     }
@@ -172,219 +176,4 @@
     <div class="preview-header">
       <div class="left">
         <span class="chip">پیش‌نمایش</span>
-        <span id="deviceLabel" class="chip">عرض: 100%</span>
-      </div>
-      <span id="heightLabel" class="chip">ارتفاع: 320px</span>
-    </div>
-    <iframe id="preview" sandbox="allow-same-origin allow-forms allow-pointer-lock allow-popups allow-scripts"></iframe>
-    <div class="resizer" id="resizer" title="برای تغییر ارتفاع بکشید"></div>
-  </div>
-
-  <footer>© <span id="year">2025</span> ساخته شده توسط <strong>Nima.Sh</strong> 🚀</footer>
-
-  <script>
-    // Translations
-    const translations = {
-      fa: { title: "SMART HTML Viewer", placeholder: "کد HTML خود را اینجا بنویسید..." },
-      en: { title: "SMART HTML Viewer", placeholder: "Write your HTML code here..." },
-      ar: { title: "SMART HTML Viewer", placeholder: "اكتب كود HTML هنا..." },
-      fr: { title: "SMART HTML Viewer", placeholder: "Écrivez votre code HTML ici..." },
-      es: { title: "SMART HTML Viewer", placeholder: "Escribe tu código HTML aquí..." },
-      zh: { title: "SMART HTML Viewer", placeholder: "在此处编写您的 HTML 代码..." },
-      de: { title: "SMART HTML Viewer", placeholder: "Schreiben Sie hier Ihren HTML-Code..." }
-    };
-
-    // Elements
-    const titleEl = document.getElementById('title');
-    const inputEl = document.getElementById('htmlInput');
-    const iframeEl = document.getElementById('preview');
-    const heightInput = document.getElementById('heightInput');
-    const heightLabel = document.getElementById('heightLabel');
-    const deviceLabel = document.getElementById('deviceLabel');
-    const langSelect = document.getElementById('languageSelect');
-    const themeToggle = document.getElementById('themeToggle');
-    const runBtn = document.getElementById('runBtn');
-    const copyBtn = document.getElementById('copyBtn');
-    const dropdown = document.getElementById('downloadDropdown');
-    const yearEl = document.getElementById('year');
-    const resizer = document.getElementById('resizer');
-
-    // State with localStorage
-    const LS = {
-      get: (k, d) => { const v = localStorage.getItem(k); return v !== null ? JSON.parse(v) : d; },
-      set: (k, v) => localStorage.setItem(k, JSON.stringify(v))
-    };
-    let state = {
-      theme: LS.get('smart.theme', 'light'),
-      lang: LS.get('smart.lang', 'fa'),
-      device: LS.get('smart.device', 'fluid'),
-      height: LS.get('smart.height', 320),
-      code: LS.get('smart.code', '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Demo</title></head><body><h2 style="font-family:sans-serif">سلام نیمولی ✨</h2><p>این یک پیش‌نمایش سریع است.</p></body></html>')
-    };
-
-    // Init UI
-    document.body.classList.toggle('dark', state.theme === 'dark');
-    themeToggle.querySelector('i').className = state.theme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
-    langSelect.value = state.lang;
-    titleEl.textContent = translations[state.lang]?.title || translations.fa.title;
-    inputEl.placeholder = translations[state.lang]?.placeholder || translations.fa.placeholder;
-    inputEl.value = state.code;
-    heightInput.value = state.height;
-    heightLabel.textContent = `ارتفاع: ${state.height}px`;
-    yearEl.textContent = new Date().getFullYear();
-
-    // Render function using srcdoc
-    function renderHTML() {
-      iframeEl.srcdoc = inputEl.value;
-      LS.set('smart.code', inputEl.value);
-    }
-    renderHTML(); // initial render
-
-    // Device preview widths
-    function updateDevice(device) {
-      let width;
-      switch (device) {
-        case 'laptop': width = 1024; break;
-        case 'tablet': width = 768; break;
-        case 'mobile': width = 390; break;
-        default: width = '100%'; device = 'fluid';
-      }
-      iframeEl.style.width = typeof width === 'number' ? width + 'px' : width;
-      deviceLabel.textContent = `عرض: ${typeof width === 'number' ? width + 'px' : '100%'}`;
-      state.device = device; LS.set('smart.device', device);
-    }
-    updateDevice(state.device);
-
-    // Height control
-    function setHeight(h) {
-      const clamped = Math.max(200, Math.min(1200, Number(h) || 320));
-      iframeEl.style.height = clamped + 'px';
-      heightLabel.textContent = `ارتفاع: ${clamped}px`;
-      heightInput.value = clamped;
-      state.height = clamped; LS.set('smart.height', clamped);
-    }
-    setHeight(state.height);
-
-    // Language change
-    function changeLanguage() {
-      const lang = langSelect.value;
-      const t = translations[lang] || translations.fa;
-      titleEl.textContent = t.title;
-      inputEl.placeholder = t.placeholder;
-      // RTL/LTR handling for Arabic/FA vs others
-      const rtl = (lang === 'fa' || lang === 'ar');
-      document.documentElement.dir = rtl ? 'rtl' : 'ltr';
-      document.documentElement.lang = lang;
-      state.lang = lang; LS.set('smart.lang', lang);
-    }
-
-    // Theme toggle
-    function toggleTheme() {
-      const isDark = document.body.classList.toggle('dark');
-      themeToggle.querySelector('i').className = isDark ? 'fas fa-sun' : 'fas fa-moon';
-      state.theme = isDark ? 'dark' : 'light'; LS.set('smart.theme', state.theme);
-    }
-
-    // Copy to clipboard
-    async function copyToClipboard() {
-      try {
-        await navigator.clipboard.writeText(inputEl.value);
-        toast('کد کپی شد!');
-      } catch {
-        alert('کپی ناموفق بود.');
-      }
-    }
-
-    // Download file
-    function downloadFile(type) {
-      const code = inputEl.value;
-      let blob, filename;
-      if (type === 'html') {
-        blob = new Blob([code], { type: 'text/html;charset=utf-8' });
-        filename = 'smart-html-viewer-output.html';
-      } else {
-        blob = new Blob([code], { type: 'text/plain;charset=utf-8' });
-        filename = 'smart-html-viewer-output.txt';
-      }
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url; a.download = filename;
-      document.body.appendChild(a); a.click(); a.remove();
-      URL.revokeObjectURL(url);
-    }
-
-    // Tiny toast
-    function toast(msg) {
-      const t = document.createElement('div');
-      t.textContent = msg;
-      t.style.position = 'fixed';
-      t.style.bottom = '16px';
-      t.style.left = '50%';
-      t.style.transform = 'translateX(-50%)';
-      t.style.background = 'var(--button-bg)';
-      t.style.color = 'var(--text-color)';
-      t.style.border = '1px solid var(--accent)';
-      t.style.boxShadow = '0 0 12px var(--shadow-color)';
-      t.style.borderRadius = '10px';
-      t.style.padding = '8px 12px';
-      t.style.zIndex = '9999';
-      document.body.appendChild(t);
-      setTimeout(() => t.remove(), 1400);
-    }
-
-    // Events
-    document.querySelectorAll('.device-button').forEach(btn => {
-      btn.addEventListener('click', () => updateDevice(btn.dataset.device));
-    });
-    heightInput.addEventListener('input', () => setHeight(heightInput.value));
-    langSelect.addEventListener('change', changeLanguage);
-    themeToggle.addEventListener('click', toggleTheme);
-    runBtn.addEventListener('click', renderHTML);
-    copyBtn.addEventListener('click', copyToClipboard);
-
-    // Dropdown interactions (mobile-friendly)
-    dropdown.querySelector('button.action-btn').addEventListener('click', (e) => {
-      e.stopPropagation();
-      dropdown.classList.toggle('open');
-    });
-    dropdown.querySelectorAll('.dropdown-content button').forEach(b => {
-      b.addEventListener('click', () => {
-        downloadFile(b.dataset.type);
-        dropdown.classList.remove('open');
-      });
-    });
-    document.addEventListener('click', (e) => {
-      if (!dropdown.contains(e.target)) dropdown.classList.remove('open');
-    });
-
-    // Resizer drag
-    (function enableResizer() {
-      let dragging = false, startY = 0, startH = state.height;
-      resizer.addEventListener('mousedown', (e) => { dragging = true; startY = e.clientY; startH = state.height; e.preventDefault(); });
-      window.addEventListener('mousemove', (e) => {
-        if (!dragging) return;
-        const delta = e.clientY - startY;
-        setHeight(startH + delta);
-      });
-      window.addEventListener('mouseup', () => dragging = false);
-      // Touch
-      resizer.addEventListener('touchstart', (e) => { dragging = true; startY = e.touches[0].clientY; startH = state.height; });
-      window.addEventListener('touchmove', (e) => {
-        if (!dragging) return;
-        const delta = e.touches[0].clientY - startY;
-        setHeight(startH + delta);
-      }, { passive: false });
-      window.addEventListener('touchend', () => dragging = false);
-    })();
-
-    // Auto-render on input (debounced)
-    let renderTimer;
-    inputEl.addEventListener('input', () => {
-      clearTimeout(renderTimer);
-      const value = inputEl.value;
-      LS.set('smart.code', value);
-      renderTimer = setTimeout(renderHTML, 250);
-    });
-  </script>
-</body>
-</html>
+        <span id="
