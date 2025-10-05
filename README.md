@@ -4,9 +4,10 @@
 🌐 **SMART HTML Viewer** یک ابزار سبک، واکنش‌گرا و چندزبانه برای تست و پیش‌نمایش کدهای HTML به‌صورت زنده است.  
 این پروژه با هدف ساده‌سازی تجربه توسعه‌دهندگان، طراحان و دانش‌آموزان طراحی شده تا بدون نیاز به محیط‌های پیچیده، کدهای HTML خود را اجرا، مشاهده و ذخیره کنند.  
 
-😍 **برای تست و استفاده:**  
-[https://Nima-Shaheswarzadeh.github.io/SMART-HTML-Viewer](https://Nima-Shaheswarzadeh.github.io/SMART-HTML-Viewer)  
-[![View](https://img.shields.io/badge/View-HTML%20Viewer-87CEEB?style=for-the-badge&logoColor=gray)](https://Nima-Shaheswarzadeh.github.io/SMART-HTML-Viewer)
+---
+
+😍 **برای تست و استفاده:**   
+[![SMART HTML Viewer](https://img.shields.io/badge/SMART%20HTML%20Viewer-View-87CEEB?style=for-the-badge&logoColor=gray)](https://Nima-Shaheswarzadeh.github.io/SMART-HTML-Viewer)
 
 ---
 
